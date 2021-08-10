@@ -1,6 +1,7 @@
 [user]
 	email = luis.osoriojain@gmail.com
 	name = Luis Osorio
+    username = Zocratexta
 
 [core]
     excludesfile = ~/.gitignore
