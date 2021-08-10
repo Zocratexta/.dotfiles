@@ -1,0 +1,29 @@
+[user]
+	email = luis.osoriojain@gmail.com
+	name = Luis Osorio
+
+[core]
+    excludesfile = ~/.gitignore
+    editor = nvim
+
+[push]
+    default = simple
+
+[color]
+    status = auto
+    diff = auto
+    branch = auto
+    interactive = auto
+    grep = auto
+    ui = auto
+
+[alias]
+    d = diff
+    co = checkout
+    ci = commit
+    st = status
+    br = branch
+    ba = branch -a
+
+[github]
+    user = Zocratexta
