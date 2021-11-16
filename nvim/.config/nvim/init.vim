@@ -1,32 +1,32 @@
-"-- Plugins ---"
+set path+=**
+
+" Nice menu when typing `:find *.py`
+set wildmode=longest,list,full
+set wildmenu
+" Ignore files
+set wildignore+=*.pyc
+set wildignore+=*_build/*
+set wildignore+=**/coverage/*
+set wildignore+=**/node_modules/*
+set wildignore+=**/android/*
+set wildignore+=**/ios/*
+set wildignore+=**/.git/*"
+
 call plug#begin('~/.vim/plugged')
-
-" syntax
-Plug 'sheerun/vim-polyglot'
-
-" status bar
-"Plug 'maximbaz/lightline-ale'
-Plug 'itchyny/lightline.vim'
 
 " themes
 Plug 'morhetz/gruvbox'
-"Plug 'shinchu/lightline-gruvbox.vim'
 
 " typing
 Plug 'jiangmiao/auto-pairs'
 Plug 'alvan/vim-closetag'
-Plug 'tpope/vim-surround'
-
-" test
-Plug 'tyewang/vimux-jest-test'
-Plug 'janko-m/vim-test'
 
 " IDE
 Plug 'mhinz/vim-signify'
 
 " git
 Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-repeat'
+Plug 'junegunn/gv.vim'
 
 " Debugger Plugins
 Plug 'puremourning/vimspector'
@@ -41,6 +41,10 @@ Plug 'glepnir/lspsaga.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/playground'
 
+" Snippets
+Plug 'L3MON4D3/LuaSnip'
+Plug 'rafamadriz/friendly-snippets'
+
 " Telescope requirements...
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
@@ -48,12 +52,11 @@ Plug 'nvim-telescope/telescope.nvim'
 
 Plug 'mbbill/undotree'
 
-" prettier
+" Prettier
 Plug 'sbdchd/neoformat'
 
 call plug#end()
 
-"---------------"
 set guicursor=
 set relativenumber
 set nohlsearch
@@ -75,69 +78,12 @@ set scrolloff=8
 "set noshowmode
 set signcolumn=yes
 set isfname+=@-@
-
+"set ls=0
 "set colorcolumn=80
-set completeopt=menuone,noinsert,noselect
-
-set mouse=a
-"set numberwidth=1
 set clipboard+=unnamedplus
 syntax on
-set showcmd
-set ruler
-"set cursorline
-"set showmatch
 
-"set laststatus=2
-let g:gruvbox_contrast_dark='hard'
-colorscheme gruvbox
-set background=dark
-
-highlight ColorColumn ctermbg=0 guibg=grey
-hi SignColumn guibg=none
-hi CursorLineNR guibg=None
-highlight Normal ctermbg=NONE guibg=none
-highlight LineNr guifg=#5eacd3
-
-
-"--- plugin config ---"
-
-" HTML, JSX
-let g:closetag_filenames = '*.hmtl,*.js,*.jsx,*.ts,*.tsx'
-
-" lightline
-"let g:lightline = {
-"      \ 'active': {
-"      \   'left': [['mode', 'paste'], [], ['relativepath', 'modified']],
-let g:lightline = {
-      \ 'active': {
-      \   'left': [['relativepath', 'modified']],
-      \   'right': [['filetype', 'percent', 'lineinfo'], ['gitbranch']]
-      \ },
-      \ 'inactive': {
-      \   'left': [['inactive'], ['relativepath']],
-      \   'right': [['bufnum']]
-      \ },
-      \ 'component': {
-      \   'bufnum': '%n',
-      \   'inactive': 'inactive'
-      \ },
-      \ 'component_function': {
-      \   'gitbranch': 'fugitive#head'
-      \ },
-      \ 'colorscheme': 'gruvbox',
-      \ 'subseparator': {
-      \   'left': '',
-      \   'right': ''
-      \ }
-      \}
-
-" Set internal encoding of vim, not needed on neovim, since coc.nvim using some
-" unicode characters in the file autoload/float.vim
-set encoding=utf-8
-
-" Some servers have issues with backup files, see #649.
-set nowritebackup
+set completeopt=menuone,noinsert,noselect
 
 " Give more space for displaying messages.
 set cmdheight=1
@@ -152,35 +98,54 @@ set shortmess+=c
 " fugitive always vertical diffing
 set diffopt+=vertical
 
+"--- colors ---"
+let g:gruvbox_invert_selection='0'
+let g:gruvbox_contrast_dark='hard'
+colorscheme gruvbox
+set background=dark
+
+highlight ColorColumn ctermbg=0 guibg=grey
+highlight SignColumn guibg=none
+highlight CursorLineNR guibg=None
+highlight Normal ctermbg=NONE guibg=none
+highlight LineNr guifg=#5eacd3
+highlight netrwDir guifg=#5eacd3
+highlight qfFileName guifg=#aed75f
+highlight TelescopeBorder guifg=#5eacd3
+
+" HTML, JSX
+let g:closetag_filenames = '*.hmtl,*.js,*.jsx,*.ts,*.tsx'
 
 "--- map keys ---"
-
 let loaded_matchparen = 1
 let mapleader=' '
 
-" quick semi
-"inoremap kj <esc>
-inoremap <C-c> <esc>
+nnoremap <silent> Q <nop>
 
-nnoremap <leader>w :w<CR>
-nnoremap <leader>q :q<CR>
+" quick semi
+inoremap <C-c> <esc>
 
 " tabs navigation
 map <Leader>h :tabprevious<cr>
 map <Leader>l :tabnext<cr>
 
 " testing
-nnoremap <Leader>t :TestNearest<CR>
-nnoremap <Leader>T :TestFile<CR>
-nnoremap <Leader>TT :TestSuite<CR>
+nmap <leader>tt <Plug>PlenaryTestFile
 
 " buffers
 map <Leader>ob :buffers<cr>
 
 " git
-nnoremap <Leader>G :G<cr>
 nnoremap <Leader>gp :Gpush<cr>
 nnoremap <Leader>gl :Gpull<cr>
+
+nnoremap <leader>ga :Git fetch --all<CR>
+nnoremap <leader>grum :Git rebase upstream/master<CR>
+nnoremap <leader>grom :Git rebase origin/master<CR>
+
+nmap <leader>gh :diffget //3<CR>
+nmap <leader>gu :diffget //2<CR>
+nmap <leader>gs :G<CR>
 
 " run current file
 nnoremap <Leader>x :!node %<cr>
@@ -204,7 +169,7 @@ fun! GotoWindow(id)
     MaximizerToggle
 endfun
 
-" Debugger remaps
+"--- Debugger remaps ---"
 nnoremap <leader>m :MaximizerToggle!<CR>
 nnoremap <leader>dd :call vimspector#Launch()<CR>
 nnoremap <leader>dc :call GotoWindow(g:vimspector_session_windows.code)<CR>
@@ -227,35 +192,31 @@ nmap <leader>drc <Plug>VimspectorRunToCursor
 nmap <leader>dbp <Plug>VimspectorToggleBreakpoint
 nmap <leader>dcbp <Plug>VimspectorToggleConditionalBreakpoint
 
+"--- Config plugins ---" 
+
 lua << EOF
-local nvim_lsp = require('lspconfig')
-nvim_lsp.tsserver.setup { on_attach=on_attach }
+
+require'lspconfig'.tsserver.setup{}
 
 local saga = require 'lspsaga'
 
 saga.init_lsp_saga {
-  error_sign = '',
-  warn_sign =  '',
-  hint_sign = '',
-  infor_sign = '',
-  border_style = "round",
+    error_sign = '',
+    warn_sign =  '',
+    hint_sign = '',
+    infor_sign = '',
+    border_style = "round",
 }
-
 
 require'nvim-treesitter.configs'.setup {
   highlight = {
     enable = true,
-    disable = {},
   },
   incremental_selection = {
       enable = true
   },
   textobjects = {
       enable = true
-  },
-  indent = {
-    enable = false,
-    disable = {},
   },
   ensure_installed = {
     "tsx",
@@ -264,29 +225,58 @@ require'nvim-treesitter.configs'.setup {
     "yaml",
     "html",
     "scss",
-    "css"
+    "css",
+    "lua",
+    "javascript",
+    "typescript",
   },
 }
-local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
-parser_config.tsx.used_by = { "javascript", "typescript.tsx" }
 
+-- snips --
+local snippets_paths = function()
+    local plugins = { "friendly-snippets" }
+    local paths = {}
+    local path
+    local root_path = vim.env.HOME .. '/.vim/plugged/'
+    for _, plug in ipairs(plugins) do
+        path = root_path .. plug
+        if vim.fn.isdirectory(path) ~= 0 then
+            table.insert(paths, path)
+        end
+    end
+    return paths
+end
+
+require("luasnip.loaders.from_vscode").lazy_load({
+    paths = snippets_paths(),
+    include = nil,  -- Load all languages
+    exclude = {}
+})
 
 EOF
 
-" Using Lua functions
-nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
+"--- Telescope --- "
 nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
-nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
-nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
 
+nnoremap <leader>ps :lua require('telescope.builtin').grep_string({ search = vim.fn.input("Grep For > ")})<CR>
+nnoremap <C-p> :lua require('telescope.builtin').git_files()<CR>
+nnoremap <Leader>pf :lua require('telescope.builtin').find_files()<CR>
 
-"nnoremap <silent> <C-j> <Cmd>Lspsaga diagnostic_jump_next<CR>
+nnoremap <leader>pw :lua require('telescope.builtin').grep_string { search = vim.fn.expand("<cword>") }<CR>
+nnoremap <leader>pb :lua require('telescope.builtin').buffers()<CR>
+nnoremap <leader>fh :lua require('telescope.builtin').help_tags()<CR>
+
+"--- Lspsaga --- "
+nnoremap <silent> <C-j> <Cmd>Lspsaga diagnostic_jump_next<CR>
 nnoremap <silent>K <Cmd>Lspsaga hover_doc<CR>
-"inoremap <silent> <C-k> <Cmd>Lspsaga signature_help<CR>
+nnoremap <silent> <C-k> <Cmd>Lspsaga signature_help<CR>
 nnoremap <silent> gh <Cmd>Lspsaga lsp_finder<CR>
 
-
-"-- lsp
+"--- lsp --- "
+let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
+fun! LspLocationList()
+    " lua vim.lsp.diagnostic.set_loclist({open_loclist = false})
+endfun
 
 nnoremap <leader>vd :lua vim.lsp.buf.definition()<CR>
 nnoremap <leader>vi :lua vim.lsp.buf.implementation()<CR>
@@ -295,10 +285,11 @@ nnoremap <leader>vrr :lua vim.lsp.buf.references()<CR>
 nnoremap <leader>vrn :lua vim.lsp.buf.rename()<CR>
 nnoremap <leader>vh :lua vim.lsp.buf.hover()<CR>
 nnoremap <leader>vca :lua vim.lsp.buf.code_action()<CR>
-nnoremap <leader>vsd :lua vim.lsp.diagnostic.show_line_diagnostics(); vim.lsp.util.show_line_diagnostics()<CR>
+nnoremap <leader>vsd :lua vim.lsd.diagnostic.show_line_diagnostics(); vim.lsp.util.show_line_diagnostics()<CR>
 nnoremap <leader>vn :lua vim.lsp.diagnostic.goto_next()<CR>
 nnoremap <leader>vll :call LspLocationList()<CR>
 
+"--- nvimcompe ---"
 let g:compe = {}
 let g:compe.enabled = v:true
 let g:compe.autocomplete = v:true
@@ -320,18 +311,15 @@ let g:compe.source.calc = v:true
 let g:compe.source.nvim_lsp = v:true
 let g:compe.source.nvim_lua = v:true
 let g:compe.source.vsnip = v:true
-
-"------------"
+let g:compe.source.ultisnips = v:true
+let g:compe.source.luasnip = v:true
 
 "--- netrw ---"
 let g:netrw_browse_split = 0
 let g:netrw_banner = 0
 let g:netrw_winsize = 25
-let g:netrw_localrmdir='rm -r'"
-
 
 "--- thanks ThePrimeagen ---"
-
 nnoremap Y y$
 
 nnoremap n nzzzv
@@ -360,3 +348,21 @@ nnoremap <Leader>+ :vertical resize +5<CR>
 nnoremap <Leader>- :vertical resize -5<CR>
 nnoremap <Leader>rp :resize 100<CR>
 
+xnoremap <leader>p "_dP
+
+nnoremap <leader>y "+y
+vnoremap <leader>y "+y
+nnoremap <leader>Y gg"+yG
+
+nnoremap <leader>d "_d
+vnoremap <leader>d "_d
+
+"--- Snips --- "
+imap <silent><expr> <Tab> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<Tab>'
+inoremap <silent> <S-Tab> <cmd>lua require'luasnip'.jump(-1)<Cr>
+
+snoremap <silent> <Tab> <cmd>lua require('luasnip').jump(1)<Cr>
+snoremap <silent> <S-Tab> <cmd>lua require('luasnip').jump(-1)<Cr>
+
+imap <silent><expr> <C-E> luasnip#choice_active() ? '<Plug>luasnip-next-choice' : '<C-E>'
+smap <silent><expr> <C-E> luasnip#choice_active() ? '<Plug>luasnip-next-choice' : '<C-E>'
